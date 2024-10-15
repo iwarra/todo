@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<link
+			href="https://fonts.googleapis.com/icon?family=Material+Icons"
+			rel="stylesheet" />
+		<title>To do list</title>
+	</head>
+	<body>
+		<header><p>Lister</p></header>
+
+		<main>
+			<h1>Welcome to Lister</h1>
+
+			<div
+				id="listNameBlock"
+				style="display: inline">
+				<label for="listName"
+					>Name your list:
+					<input
+						type="text"
+						required
+						id="listNameInput"
+				/></label>
+				<button id="createListBtn">Create</button>
+			</div>
+
+			<h2 id="listTitleTag"></h2>
+
+			<div
+				id="addListItemBlock"
+				style="display: none">
+				<label for="listItem"
+					>Add item:
+					<input
+						type="text"
+						required
+						minlength="2"
+						id="listItemInput"
+				/></label>
+				<button id="addListItemBtn">Add</button>
+			</div>
+
+			<div id="listBlock"></div>
+		</main>
+		<footer></footer>
+		<script src="script.js"></script>
+	</body>
+</html>
