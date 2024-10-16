@@ -22,7 +22,6 @@ function saveDataToLocalStorage(name, data) {
 
 function getDataFromLocalStorage(name) {
 	const data = localStorage.getItem(name);
-	console.log('Hello from local storage', data);
 	return data ? JSON.parse(data) : { lists: [] };
 	//use if list is empty check later on if needed
 }
@@ -46,16 +45,14 @@ function storeNewItem(item) {
 	saveDataToLocalStorage('AllLists', data);
 }
 
-function createListItemObj(id, item) {
-	return {
-		id,
-		item,
-		done: false,
-	};
+function ListItem(id, item) {
+	this.id = id;
+	this.item = item;
+	this.done = false;
 }
 
 function handleCreateList() {
-	//Get the list name from the input element, create a unique ID for it and it to localStorage
+	//Get the list name from the input element, create a unique ID for it and add it to localStorage
 	const listId = self.crypto.randomUUID();
 	currentListId = listId;
 	const listName = listNameInputEl.value;
@@ -72,27 +69,41 @@ function handleCreateList() {
 	listNameBlockEl.style.display = 'none';
 }
 
+function toggleTaskStatus(itemId) {
+	const data = getDataFromLocalStorage('AllLists');
+	let currentList = data.lists.find((list) => list.id == currentListId);
+	let itemToUpdate = currentList.items.find((item) => item.id == itemId);
+	if (itemToUpdate) {
+		if (itemToUpdate.done == false) itemToUpdate.done = true;
+		else itemToUpdate.done = false;
+	}
+	saveDataToLocalStorage('AllLists', data);
+}
+
 function handleAddingItem() {
 	const itemId = self.crypto.randomUUID();
-	const newListItem = createListItemObj(itemId, listItemInputEl.value);
+	const newListItem = new ListItem(itemId, listItemInputEl.value);
 	storeNewItem(newListItem);
-	//Create li for the item
+
+	//Div wrapper for styling (later used for easier removal)
+	const div = document.createElement('div');
+	div.className = 'listItemWrapper';
+	//Create li for the list item
 	const li = document.createElement('li');
 	li.id = `item-${itemId}`;
-
-	//Creating and adding attributes for checkbox
-	const checkbox = document.createElement('input');
-	checkbox.type = 'checkbox';
-	checkbox.checked = false;
-	checkbox.id = `check-${itemId}`;
+	li.addEventListener('click', () => {
+		li.classList.toggle('strikethrough');
+		toggleTaskStatus(itemId);
+	});
 	li.innerText = listItemInputEl.value;
 
 	//Get the current list to append to
 	if (currentListId) {
 		const listEl = document.querySelector(`#list-${currentListId}`);
-		listEl.appendChild(li);
-		li.appendChild(checkbox);
-		li.appendChild(createDeleteIconElement(itemId));
+
+		listEl.appendChild(div);
+		div.appendChild(li);
+		div.appendChild(createDeleteIconElement(itemId));
 	} else {
 		console.error(`List with ID list-${currentListId} not found`);
 	}
@@ -106,16 +117,15 @@ function createDeleteIconElement(itemId) {
 	deleteIcon.innerText = 'delete';
 	deleteIcon.style.cursor = 'pointer';
 
-	function handleDeleteItem() {
-		const data = getDataFromLocalStorage('AllLists');
-		console.log('in handle delete', data);
-		let currentList = data.lists.find((list) => list.id === currentListId);
-		currentList.items = currentList.items.filter((item) => item.id !== itemId);
-		saveDataToLocalStorage('AllLists', data);
-		const element = document.querySelector(`#item-${itemId}`);
-		element.remove();
-	}
-	//Need to be removed for real both from DOM and from the storage
-	deleteIcon.addEventListener('click', handleDeleteItem);
+	deleteIcon.addEventListener('click', () => handleDeleteItem(itemId));
 	return deleteIcon;
+}
+
+function handleDeleteItem(itemId) {
+	const data = getDataFromLocalStorage('AllLists');
+	let currentList = data.lists.find((list) => list.id === currentListId);
+	currentList.items = currentList.items.filter((item) => item.id !== itemId);
+	saveDataToLocalStorage('AllLists', data);
+	const div = document.querySelector('.listItemWrapper');
+	div.remove();
 }
