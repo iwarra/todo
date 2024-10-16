@@ -8,6 +8,9 @@
 		<link
 			href="https://fonts.googleapis.com/icon?family=Material+Icons"
 			rel="stylesheet" />
+		<link
+			rel="stylesheet"
+			href="style.css" />
 		<title>To do list</title>
 	</head>
 	<body>
@@ -24,6 +27,7 @@
 					<input
 						type="text"
 						required
+						minlength="2"
 						id="listNameInput"
 				/></label>
 				<button id="createListBtn">Create</button>
@@ -38,7 +42,6 @@
 					>Add item:
 					<input
 						type="text"
-						required
 						minlength="2"
 						id="listItemInput"
 				/></label>
@@ -47,7 +50,7 @@
 
 			<div id="listBlock"></div>
 		</main>
-		<footer></footer>
+		<footer>&copy; 2024, Ivona Josipovic</footer>
 		<script src="script.js"></script>
 	</body>
 </html>
