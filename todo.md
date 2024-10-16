@@ -16,8 +16,16 @@
 
 \***\* Refactoring Ideas: \*\***
 
+- Add list and list items not bust by clicking on the button, but also by pressing enter
+
 - Refactor to use e.target.reset if possible to reset the element after the input is submitted
 
 - for loop to add events to all elements
 
 - toggle class to add/remove styles
+
+- minimum input length
+
+** To do: **
+
+- styling
