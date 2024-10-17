@@ -1,18 +1,32 @@
+//Select all needed elements
 const listNameEl = document.querySelector('#listTitleTag');
 const listNameInputEl = document.querySelector('#listNameInput');
 const listNameBlockEl = document.querySelector('#listNameBlock');
 const addListItemBlock = document.querySelector('#addListItemBlock');
 const listItemInputEl = document.querySelector('#listItemInput');
 const listBlockEl = document.querySelector('#listBlock');
+const listNameErrorEl = document.querySelector('#listNameError');
+const listItemErrorEl = document.querySelector('#listItemError');
 
-//Buttons and event handlers
+//Buttons, inputs and event handlers
 const createListBtn = document.querySelector('#createListBtn');
 createListBtn.addEventListener('click', handleCreateList);
 const addListItemBtn = document.querySelector('#addListItemBtn');
 addListItemBtn.addEventListener('click', handleAddingItem);
+// Add list/item when user presses enter instead of clicking on a button
+listNameInputEl.addEventListener('keydown', (event) => {
+	if (event.key === 'Enter') {
+		handleCreateList();
+	}
+});
+listItemInputEl.addEventListener('keydown', (event) => {
+	if (event.key === 'Enter') {
+		handleAddingItem();
+	}
+});
 
+//Not good to have in global
 let currentListId = null;
-
 //When and where to we create the initial one
 localStorage.setItem('AllLists', JSON.stringify({ lists: [] }));
 
@@ -52,6 +66,7 @@ function ListItem(id, item) {
 }
 
 function handleCreateList() {
+	if (!validateInput(listNameInputEl, listNameErrorEl)) return;
 	//Get the list name from the input element, create a unique ID for it and add it to localStorage
 	const listId = self.crypto.randomUUID();
 	currentListId = listId;
@@ -67,7 +82,6 @@ function handleCreateList() {
 	listNameInputEl.value = '';
 	listNameBlockEl.classList.toggle('d-none');
 	addListItemBlock.classList.toggle('d-none');
-	//addListItemBlock.classList.toggle = 'd-flex';
 }
 
 function toggleTaskStatus(itemId) {
@@ -82,6 +96,7 @@ function toggleTaskStatus(itemId) {
 }
 
 function handleAddingItem() {
+	if (!validateInput(listItemInputEl, listItemErrorEl)) return;
 	const itemId = self.crypto.randomUUID();
 	const newListItem = new ListItem(itemId, listItemInputEl.value);
 	storeNewItem(newListItem);
@@ -128,6 +143,21 @@ function handleDeleteItem(itemId) {
 	let currentList = data.lists.find((list) => list.id === currentListId);
 	currentList.items = currentList.items.filter((item) => item.id !== itemId);
 	saveDataToLocalStorage('AllLists', data);
-	const div = document.querySelector('.listItemWrapper');
-	div.remove();
+
+	const itemToDelete = document.querySelector(`#item-${itemId}`);
+	if (itemToDelete && itemToDelete.parentElement) {
+		itemToDelete.parentElement.remove();
+	}
+}
+
+function validateInput(inputEl, messageEl, minLength = 2) {
+	const value = inputEl.value.trim(); // Get the input value and remove extra spaces
+	messageEl.innerText = ''; // Clear previous error messages
+
+	if (value.length < minLength) {
+		messageEl.innerText = `Input must be at least ${minLength} characters long.`; // Set error message
+		return false;
+	}
+
+	return true;
 }
