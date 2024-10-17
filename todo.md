@@ -20,8 +20,6 @@
 
 - Refactor to use e.target.reset if possible to reset the element after the input is submitted
 
-- Add a class that hides/shows elements - toggle where needed
-
 - minimum input length: validate user input in JS
 
-- styling: Add bootstrap
+- fix bug in deleting list items (order not correct)
