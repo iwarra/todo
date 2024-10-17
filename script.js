@@ -65,7 +65,7 @@ function ListItem(id, item) {
 	this.done = false;
 }
 
-function createId() {
+function generateId() {
 	return self.crypto.randomUUID();
 }
 
@@ -74,7 +74,7 @@ function resetInput(element) {
 }
 
 function createNewList(listName) {
-	const listId = createId();
+	const listId = generateId();
 	currentListId = listId; // Update global currentListId
 	storeNewList(listName, listId);
 }
@@ -111,12 +111,14 @@ function toggleTaskStatus(itemId) {
 	saveDataToLocalStorage('AllLists', data);
 }
 
-function handleAddingItem() {
-	if (!validateInput(listItemInputEl, listItemErrorEl)) return;
-	const itemId = createId();
-	const newListItem = new ListItem(itemId, listItemInputEl.value);
+function createNewListItem(itemText) {
+	const itemId = generateId();
+	const newListItem = new ListItem(itemId, itemText);
 	storeNewItem(newListItem);
+	return itemId; // Return the new item ID for further use
+}
 
+function updateUIAfterAddingItem(itemId, itemText) {
 	//Div wrapper for styling (later used for easier removal)
 	const div = document.createElement('div');
 	div.className = 'listItemWrapper';
@@ -140,7 +142,13 @@ function handleAddingItem() {
 	} else {
 		console.error(`List with ID list-${currentListId} not found`);
 	}
+}
 
+function handleAddingItem() {
+	if (!validateInput(listItemInputEl, listItemErrorEl)) return;
+	const itemText = listItemInputEl.value;
+	const itemId = createNewListItem(itemText);
+	updateUIAfterAddingItem(itemId, itemText);
 	resetInput(listItemInputEl);
 }
 
