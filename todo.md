@@ -16,10 +16,6 @@
 
 **_ To Do _**
 
-- Add event for enter keypress
+- Refactor and break down functions not to do multiple things
 
 - Refactor to use e.target.reset if possible to reset the element after the input is submitted
-
-- minimum input length: validate user input in JS
-
-- fix bug in deleting list items (order not correct)
