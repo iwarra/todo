@@ -65,23 +65,39 @@ function ListItem(id, item) {
 	this.done = false;
 }
 
-function handleCreateList() {
-	if (!validateInput(listNameInputEl, listNameErrorEl)) return;
-	//Get the list name from the input element, create a unique ID for it and add it to localStorage
-	const listId = self.crypto.randomUUID();
-	currentListId = listId;
-	const listName = listNameInputEl.value;
+function createId() {
+	return self.crypto.randomUUID();
+}
+
+function resetInput(element) {
+	element.value = '';
+}
+
+function createNewList(listName) {
+	const listId = createId();
+	currentListId = listId; // Update global currentListId
 	storeNewList(listName, listId);
-	//show the list name to the user
-	listNameEl.innerText = listName;
-	//create a list element for our new list, add ID and append to the parent el
+}
+
+function updateUIAfterListCreation(listId, listName) {
+	listNameEl.innerText = listName; // Show the list name to the user
+
+	// Create a list element for the new list, add ID, and append to the parent element
 	const ol = document.createElement('ol');
 	ol.id = `list-${listId}`;
 	listBlockEl.appendChild(ol);
-	//reset after use and show-hide the elements accordingly
-	listNameInputEl.value = '';
+
+	// Toggle visibility for the list name block and item input block
 	listNameBlockEl.classList.toggle('d-none');
 	addListItemBlock.classList.toggle('d-none');
+}
+
+function handleCreateList() {
+	if (!validateInput(listNameInputEl, listNameErrorEl)) return;
+	const listName = listNameInputEl.value;
+	createNewList(listName);
+	updateUIAfterListCreation(currentListId, listName);
+	resetInput(listNameInputEl);
 }
 
 function toggleTaskStatus(itemId) {
@@ -97,7 +113,7 @@ function toggleTaskStatus(itemId) {
 
 function handleAddingItem() {
 	if (!validateInput(listItemInputEl, listItemErrorEl)) return;
-	const itemId = self.crypto.randomUUID();
+	const itemId = createId();
 	const newListItem = new ListItem(itemId, listItemInputEl.value);
 	storeNewItem(newListItem);
 
@@ -125,7 +141,7 @@ function handleAddingItem() {
 		console.error(`List with ID list-${currentListId} not found`);
 	}
 
-	listItemInputEl.value = '';
+	resetInput(listItemInputEl);
 }
 
 function createDeleteIconElement(itemId) {
