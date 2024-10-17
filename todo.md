@@ -16,6 +16,14 @@
 
 **_ To Do _**
 
-- Refactor and break down functions not to do multiple things
+- Refactor and use objects and methods instead of functions
 
-- Refactor to use e.target.reset if possible to reset the element after the input is submitted
+- Split logic into separate files
+
+- Build further the possibility to add and delete lists
+
+- Page to show all the lists
+
+- Option to style different lists differently
+
+- Option to mark all tasks as done/not done
