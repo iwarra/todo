@@ -65,8 +65,9 @@ function handleCreateList() {
 	listBlockEl.appendChild(ol);
 	//reset after use and show-hide the elements accordingly
 	listNameInputEl.value = '';
-	addListItemBlock.style.display = 'inline';
-	listNameBlockEl.style.display = 'none';
+	listNameBlockEl.classList.toggle('d-none');
+	addListItemBlock.classList.toggle('d-none');
+	//addListItemBlock.classList.toggle = 'd-flex';
 }
 
 function toggleTaskStatus(itemId) {
@@ -96,6 +97,7 @@ function handleAddingItem() {
 		toggleTaskStatus(itemId);
 	});
 	li.innerText = listItemInputEl.value;
+	li.style.cursor = 'pointer';
 
 	//Get the current list to append to
 	if (currentListId) {
